@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+  <context:component-scan base-package="org.seckill.dao" />
+
+  <!-- 读取数据库配置文件 -->
+  <util:properties id="db" location="classpath:db.properties" />
+
+  <!-- 配置MyBatis -->
+  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+    <property name="driverClassName" value="#{db.driverClassName }" />
+    <property name="url" value="#{db.url }" />
+    <property name="username" value="#{db.username }" />
+    <property name="password" value="#{db.password }" />
+    <!-- 最大连接数量 -->
+    <property name="maxActive" value="#{db.maxActive}" />
+    <!-- 最小空闲连接 -->
+    <property name="minIdle" value="#{db.minIdle}" />
+    <!-- 初始化连接 -->
+    <property name="initialSize" value="#{db.initialSize}" />
+    <!-- 连接被泄露时是否打印 -->
+    <property name="logAbandoned" value="#{db.logAbandoned}" />
+    <!-- 是否自动回收超时连接 -->
+    <property name="removeAbandoned" value="#{db.removeAbandoned}" />
+    <!-- 超时时间(s) -->
+    <property name="removeAbandonedTimeout" value="#{db.removeAbandonedTimeout}" />
+    <!-- 超时等待时间 (ms)-->
+    <property name="maxWait" value="#{db.maxWait}" />
+    <!-- 在空闲连接回收器线程运行期间休眠的时间值(ms) -->
+    <property name="timeBetweenEvictionRunsMillis" value="#{db.timeBetweenEvictionRunsMillis}" />
+    <!-- 连接在池中保持空闲而不被空闲连接回收器线程(ms) -->
+    <property name="minEvictableIdleTimeMillis" value="#{db.minEvictableIdleTimeMillis}" />
+    <!-- 借出连接是否测试 -->
+    <property name="testOnBorrow" value="#{db.testOnBorrow}" />
+    <!-- true if objects are validated before being returned to the pool -->
+    <property name="testOnReturn" value="#{db.testOnReturn}" />
+    <!-- 验证使用的SQL语句 -->
+    <property name="validationQuery" value="#{db.validationQuery}" />
+    <!-- 指明连接是否被空闲连接回收器(如果有)进行检验.如果检测失败,则连接将被从池中去除. -->
+    <property name="testWhileIdle" value="#{db.testWhileIdle}" />
+    
+    <property name="maxOpenPreparedStatements" value="#{db.maxOpenPreparedStatements}" />
+  </bean>
+
+  <!-- 创建工厂方法 -->
+  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <!--注入数据库连接池-->
+    <property name="dataSource" ref="dataSource" />
+    <!--配置MyBatis全局配置文件-->
+    <property name="configLocation" value="classpath:mybatis-config.xml" />
+    <!--扫描entity包 使用别名-->
+    <property name="typeAliasesPackage" value="org.seckill.entity" />
+    <!--扫描sql配置文件-->
+    <property name="mapperLocations" value="classpath:mappers/**/*.xml" />
+  </bean>
+
+  <!--配置扫描Dao接口包, 动态实现Dao接口, 注入spring容器中-->
+  <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    <property name="basePackage" value="org.seckill.dao" />
+    <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+  </bean>
+  
+  <!-- 事务管理 : DataSourceTransactionManager dataSource:引用上面定义的数据源 -->
+  <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource" />
+  </bean>
+  
+  <!-- 使用声明式事务 transaction-manager：引用上面定义的事务管理器 -->
+  <tx:annotation-driven transaction-manager="txManager" />
+
+  <!--RedisDao-->
+  <bean id="redisDao" class="org.seckill.dao.cache.RedisDao">
+    <constructor-arg index="0" value="localhost" />
+    <constructor-arg index="1" value="6379" />
+  </bean>
+
+</beans>

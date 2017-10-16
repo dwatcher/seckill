@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+  <!-- <classPathEntry location="src/resource/mysql-connector-java-5.1.25-bin.jar" /> -->
+  <classPathEntry location="src/test/resources/mysql-connector-java-5.1.25.jar" />
+  
+  <context id="permission" defaultModelType="flat" targetRuntime="MyBatis3">
+  
+    <!-- 自动识别数据库关键字，默认false，如果设置为true，根据SqlReservedWords中定义的关键字列表； -->
+    <!-- 一般保留默认值，遇到数据库关键字（Java关键字），使用columnOverride覆盖 -->
+    <property name="autoDelimitKeywords" value="false"/>
+    
+    <!-- 生成的Java文件的编码 -->
+    <property name="javaFileEncoding" value="UTF-8"/>
+    
+    <!-- 格式化java代码 -->
+    <property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter"/>
+    
+    <!-- 格式化XML代码 -->
+    <property name="xmlFormatter" value="resource.MyXmlFormatter"/>
+    
+    <!-- beginningDelimiter和endingDelimiter：指明数据库的用于标记数据库对象名的符号，比如ORACLE就是双引号，MYSQL默认是`反引号； -->
+    <property name="beginningDelimiter" value="`"/>
+    <property name="endingDelimiter" value="`"/>
+  
+    <plugin type="resource.PaginationPlugin" />
+
+    <plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
+
+    <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin" />
+    
+    <commentGenerator>
+      <property name="suppressAllComments" value="true" />
+      <property name="suppressDate" value="false" />
+    </commentGenerator>
+    
+    <!-- 必须要有的，使用这个配置链接数据库 -->
+    <!-- @TODO:是否可以扩展 -->
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+      connectionURL="jdbc:mysql://localhost:3306/seckill"
+      userId="root" password="123456" />
+      
+    <!-- java类型处理器  -->
+    <!-- 用于处理DB中的类型到Java中的类型，默认使用JavaTypeResolverDefaultImpl； -->
+    <!-- 注意一点，默认会先尝试使用Integer，Long，Short等来对应DECIMAL和 NUMERIC数据类型；  -->
+    <javaTypeResolver>
+      <!-- true：使用BigDecimal对应DECIMAL和 NUMERIC数据类型 -->
+      <!-- false：默认, -->
+      <!-- scale>0;length>18：使用BigDecimal; -->
+      <!-- scale=0;length[10,18]：使用Long； -->
+      <!-- scale=0;length[5,9]：使用Integer； -->
+      <!-- scale=0;length<5：使用Short； -->
+      <property name="forceBigDecimals" value="false" />
+    </javaTypeResolver>
+    
+    <!-- 生成文件目标位置 -->
+    <javaModelGenerator targetPackage="org.seckill.entity"
+      targetProject="./src/main/java">
+      <property name="enableSubPackages" value="true" />
+      <property name="trimStrings" value="true" />
+      <!-- 增加基础bean的继承操作，将通用属性集成到BaseEntity内部 -->
+      <property name="rootClass" value="org.seckill.entity.BaseEntity"/>
+    </javaModelGenerator>
+    
+    <sqlMapGenerator targetPackage="mappers"
+      targetProject="./src/main/resources">
+      <property name="enableSubPackages" value="true" />
+    </sqlMapGenerator>
+    
+    <javaClientGenerator type="XMLMAPPER"
+      targetPackage="org.seckill.dao"
+      targetProject="./src/main/java">
+      <property name="enableSubPackages" value="true" />
+    </javaClientGenerator>
+    
+    <!-- 单个表配置 -->
+    <table tableName="seckill" mapperName="SeckillDao" domainObjectName="Seckill">
+      <generatedKey column="seckill_id" sqlStatement="select @@identity" identity="true" />
+    </table>
+
+    <table tableName="success_killed" mapperName="SuccessKilledDao" domainObjectName="SuccessKilled">
+      <generatedKey column="seckill_id user_phone" sqlStatement="select @@identity" identity="true" />
+    </table>
+    
+  </context>
+  
+</generatorConfiguration>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
