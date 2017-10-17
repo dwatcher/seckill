@@ -28,7 +28,7 @@ VALUES
 
 -- 秒杀成功明细表
 -- 用户登录认证相关的信息
-CREATE TABLE IF NOT EXISTS success_kill(
+CREATE TABLE IF NOT EXISTS success_killed(
 	`seckill_id` bigint NOT NULL COMMENT '商品库存id',
     `user_phone` bigint NOT NULL COMMENT '商品库存id',
     `state` tinyint NOT NULL DEFAULT -1 COMMENT '状态标志:-1:无效 0:成功 1:已付款 2:已发货',

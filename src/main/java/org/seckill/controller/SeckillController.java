@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-@RequestMapping("/seckill")
+@RequestMapping("/app/seckill")
 public class SeckillController {
 
     @Autowired
@@ -82,17 +82,17 @@ public class SeckillController {
         }
         JsonResult<SeckillException> result;
         try {
-            SeckillExecution execution = seckillService.executeSeckill(seckillId, userPhone, md5);
-            return new JsonResult<SeckillExecution>(JsonResultStatus.SUCCESS, execution).toJsonString();
+            SeckillExecution execution = seckillService.executeSeckillProcedure(seckillId, userPhone, md5);
+            return new JsonResult<SeckillExecution>(execution.getState(), execution).toJsonString();
         } catch (RepeatKillException e1) {
             SeckillExecution execution = new SeckillExecution(seckillId, SeckillStatEnum.REPEAT_KILL);
-            return new JsonResult<SeckillExecution>(JsonResultStatus.SUCCESS, execution).toJsonString();
+            return new JsonResult<SeckillExecution>(JsonResultStatus.FAIL, execution).toJsonString();
         } catch (SeckillCloseException e2) {
             SeckillExecution execution = new SeckillExecution(seckillId, SeckillStatEnum.END);
-            return new JsonResult<SeckillExecution>(JsonResultStatus.SUCCESS, execution).toJsonString();
+            return new JsonResult<SeckillExecution>(JsonResultStatus.FAIL, execution).toJsonString();
         } catch (Exception e) {
             SeckillExecution execution = new SeckillExecution(seckillId, SeckillStatEnum.INNER_ERROR);
-            return new JsonResult<SeckillExecution>(JsonResultStatus.SUCCESS, execution).toJsonString();
+            return new JsonResult<SeckillExecution>(JsonResultStatus.FAIL, execution).toJsonString();
         }
     }
 

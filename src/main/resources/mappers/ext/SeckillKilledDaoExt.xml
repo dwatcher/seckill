@@ -7,8 +7,8 @@
     call execute_seckill(
       #{seckillId, jdbcType=BIGINT , mode=IN},
       #{phone, jdbcType=BIGINT , mode=IN},
-      #{kill, jdbcType=TIMESTAMP , mode=IN},
-      #{result, jdbcType=INTEGER , mode=OUT},
+      #{killTime, jdbcType=TIMESTAMP , mode=IN},
+      #{result, jdbcType=INTEGER , mode=OUT}
     )
   </select>
 

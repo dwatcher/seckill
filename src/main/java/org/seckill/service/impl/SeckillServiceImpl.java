@@ -159,12 +159,12 @@ public class SeckillServiceImpl implements SeckillService {
         paramMap.put("result", null);
         try {
             successKilledDaoExt.killByProcedure(paramMap);
-            int result = MapUtils.getInteger(paramMap, "result", 2);
+            Integer result = MapUtils.getInteger(paramMap, "result", -2);
             if (result == 1) {
-                SuccessKilled successKilled = successKilledDaoExt.selectByPrimaryKey(seckillId, userPhone);
-                return new SeckillExecution(seckillId, SeckillStatEnum.SUCCESS, successKilled);
+                SuccessKilled sk = successKilledDaoExt.selectByPrimaryKey(seckillId, userPhone);
+                return new SeckillExecution(seckillId, SeckillStatEnum.SUCCESS, sk);
             } else {
-                return new SeckillExecution(seckillId, SeckillStatEnum.stateOf(result));
+                return new SeckillExecution(seckillId, SeckillStatEnum.stateOf(-result));
             }
         } catch (Exception e) {
             return new SeckillExecution(seckillId, SeckillStatEnum.INNER_ERROR);
