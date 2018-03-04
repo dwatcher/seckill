@@ -39,11 +39,11 @@ public class SeckillController {
     @ResponseBody
     public String detail(@PathVariable("seckillId") Long seckillId) {
         if (seckillId == null) {
-            return new JsonResult(JsonResultStatus.FAIL, "seckillId is none!").toJsonString();
+            return new JsonResult(JsonResultStatus.FAILED, "seckillId is none!").toJsonString();
         }
         Seckill byId = seckillService.getById(seckillId);
         if (byId == null) {
-            return new JsonResult(JsonResultStatus.FAIL, "scekill is none!").toJsonString();
+            return new JsonResult(JsonResultStatus.FAILED, "scekill is none!").toJsonString();
         }
         return new JsonResult<Seckill>(JsonResultStatus.SUCCESS, byId).toJsonString();
     }
@@ -65,7 +65,7 @@ public class SeckillController {
             result = new JsonResult<Exposer>(JsonResultStatus.SUCCESS, exposer);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new JsonResult<Exposer>(JsonResultStatus.FAIL, e.getMessage());
+            result = new JsonResult<Exposer>(JsonResultStatus.FAILED, e.getMessage());
         }
         return result.toJsonString();
     }
@@ -78,7 +78,7 @@ public class SeckillController {
                             @PathVariable("md5") String md5,
                             @CookieValue(value = "userPhone", required = false) Long userPhone) {
         if (userPhone == null) {
-            return new JsonResult<SeckillExecution>(JsonResultStatus.FAIL, "未注册").toJsonString();
+            return new JsonResult<SeckillExecution>(JsonResultStatus.FAILED, "未注册").toJsonString();
         }
         JsonResult<SeckillException> result;
         try {
@@ -86,13 +86,13 @@ public class SeckillController {
             return new JsonResult<SeckillExecution>(execution.getState(), execution).toJsonString();
         } catch (RepeatKillException e1) {
             SeckillExecution execution = new SeckillExecution(seckillId, SeckillStatEnum.REPEAT_KILL);
-            return new JsonResult<SeckillExecution>(JsonResultStatus.FAIL, execution).toJsonString();
+            return new JsonResult<SeckillExecution>(JsonResultStatus.FAILED, execution).toJsonString();
         } catch (SeckillCloseException e2) {
             SeckillExecution execution = new SeckillExecution(seckillId, SeckillStatEnum.END);
-            return new JsonResult<SeckillExecution>(JsonResultStatus.FAIL, execution).toJsonString();
+            return new JsonResult<SeckillExecution>(JsonResultStatus.FAILED, execution).toJsonString();
         } catch (Exception e) {
             SeckillExecution execution = new SeckillExecution(seckillId, SeckillStatEnum.INNER_ERROR);
-            return new JsonResult<SeckillExecution>(JsonResultStatus.FAIL, execution).toJsonString();
+            return new JsonResult<SeckillExecution>(JsonResultStatus.FAILED, execution).toJsonString();
         }
     }
 
